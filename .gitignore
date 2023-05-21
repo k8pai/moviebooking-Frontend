@@ -3,8 +3,12 @@
 # dependencies
 /node_modules
 
+# experimenting
+/experimenting
+
 # testing
 /coverage
+
 
 # production
 /build
