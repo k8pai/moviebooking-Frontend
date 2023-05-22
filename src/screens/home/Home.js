@@ -15,6 +15,8 @@ import {
 	ListItemText,
 	TextField,
 	Button,
+	FormHelperText,
+	OutlinedInput,
 } from '@mui/material';
 // import { withStyles } from '@material-ui/core/styles';
 // import Card from '@material-ui/core/Card';
@@ -98,38 +100,7 @@ const theme = createTheme({
 	},
 });
 
-const styles = (theme) => ({
-	root: {
-		flexGrow: 1,
-		backgroundColor: theme.palette.background.paper,
-	},
-	upcomingMoviesHeading: {
-		textAlign: 'center',
-		background: '#ff9999',
-		padding: '8px',
-		fontSize: '1rem',
-	},
-	gridListUpcomingMovies: {
-		flexWrap: 'nowrap',
-		transform: 'translateZ(0)',
-		width: '100%',
-	},
-	gridListMain: {
-		transform: 'translateZ(0)',
-		cursor: 'pointer',
-	},
-	formControl: {
-		margin: theme.spacing.unit,
-		minWidth: 240,
-		maxWidth: 240,
-	},
-	title: {
-		color: theme.palette.primary.light,
-	},
-});
-
 const Home = () => {
-	const classes = styles;
 	const { baseUrl } = useContext(backendApiContext);
 	const [state, setState] = useState({
 		movieName: '',
@@ -292,7 +263,6 @@ const Home = () => {
 						spacing={2}
 						cols={5}
 						variant={'gridListUpcomingMovies'}
-						className={classes.gridListUpcomingMovies}
 					>
 						{state.upcomingMovies.map((movie) => (
 							<Grid item key={'upcoming' + movie._id}>
@@ -314,7 +284,6 @@ const Home = () => {
 							container
 							spacing={2}
 							variant={'gridListMain'}
-							className={classes.gridListMain}
 						>
 							{state.releasedMovies.map((movie) => (
 								<Grid
@@ -349,44 +318,61 @@ const Home = () => {
 						<Card>
 							<CardContent>
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										margin: '10px 0px',
+										boxSizing: 'border-box',
+									}}
 								>
 									<Typography
 										variant={'subtitle1'}
+										sx={{
+											textAlign: 'center',
+											fontWeight: 'bold',
+										}}
 										color="textSecondary"
 									>
-										FIND MOVIES BY:
+										Filter MOVIES
 									</Typography>
 								</FormControl>
 
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										marginBottom: '20px',
+										boxSizing: 'border-box',
+									}}
 								>
-									<InputLabel htmlFor="movieName">
-										Movie Name
-									</InputLabel>
-									<Input
+									<TextField
 										id="movieName"
+										label={'Movie Name'}
 										name="movieName"
+										sx={{
+											width: '100%',
+										}}
+										variant="outlined"
 										onChange={handleChange}
 									/>
 								</FormControl>
 
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										marginBottom: '20px',
+										boxSizing: 'border-box',
+									}}
 								>
 									<InputLabel htmlFor="select-multiple-checkbox">
 										Genres
 									</InputLabel>
 									<Select
 										multiple
+										sx={{
+											width: '100%',
+										}}
 										name={'genres'}
-										input={
-											<Input id="select-multiple-checkbox-genre" />
-										}
+										input={<OutlinedInput label="Genres" />}
+										label="genres"
 										renderValue={(selected) =>
 											selected.join(',')
 										}
@@ -412,10 +398,12 @@ const Home = () => {
 										))}
 									</Select>
 								</FormControl>
-
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										marginBottom: '20px',
+										boxSizing: 'border-box',
+									}}
 								>
 									<InputLabel htmlFor="select-multiple-checkbox">
 										Artists
@@ -423,14 +411,15 @@ const Home = () => {
 									<Select
 										multiple
 										name={'artists'}
+										sx={{ width: '100%' }}
 										input={
-											<Input id="select-multiple-checkbox" />
+											<OutlinedInput label="Artists" />
 										}
 										renderValue={(selected) =>
 											selected.join(',')
 										}
 										value={state.artists}
-										onChange={artistSelectHandler}
+										onChange={handleChange}
 									>
 										{state.artistsList.map((artist) => (
 											<MenuItem
@@ -463,13 +452,17 @@ const Home = () => {
 								</FormControl>
 
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										marginBottom: '20px',
+										boxSizing: 'border-box',
+									}}
 								>
 									<TextField
 										id="releaseDateStart"
 										name="releaseDateStart"
 										label="Release Date Start"
+										sx={{ width: '100%' }}
 										type="date"
 										defaultValue=""
 										InputLabelProps={{ shrink: true }}
@@ -478,27 +471,32 @@ const Home = () => {
 								</FormControl>
 
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										marginBottom: '20px',
+										boxSizing: 'border-box',
+									}}
 								>
 									<TextField
 										id="releaseDateEnd"
 										name={'releaseDateEnd'}
 										label="Release Date End"
+										sx={{ width: '100%' }}
 										type="date"
 										defaultValue=""
 										InputLabelProps={{ shrink: true }}
 										onChange={handleChange}
 									/>
 								</FormControl>
-								<br />
-								<br />
 								<FormControl
-									variant={'formControl'}
-									className={classes.formControl}
+									sx={{
+										display: 'block',
+										boxSizing: 'border-box',
+									}}
 								>
 									<Button
 										onClick={() => filterApplyHandler()}
+										sx={{ width: '100%' }}
 										variant="contained"
 										color="primary"
 									>
