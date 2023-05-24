@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import './Home.css';
-import Header from '../../common/header/Header';
+import '../styles/Home.page.css';
+import Header from '../components/Header';
 import {
 	Typography,
 	Grid,
@@ -31,7 +31,7 @@ import {
 // import ListItemText from '@material-ui/core/ListItemText';
 // import TextField from '@material-ui/core/TextField';
 // import Button from '@material-ui/core/Button';
-import { backendApiContext } from '../../context';
+import { backendApiContext } from '../context';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
 

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import './Header.css';
+import '../styles/Header.component.css';
 import {
 	Button,
 	Tabs,
@@ -11,7 +11,7 @@ import {
 	FormHelperText,
 } from '@mui/material';
 // import Button from '@material-ui/core/Button';
-import logo from '../../assets/logo.svg';
+import logo from '../assets/logo.svg';
 import Modal from 'react-modal';
 // import Tabs from '@material-ui/core/Tabs';
 // import Tab from '@material-ui/core/Tab';
@@ -22,7 +22,8 @@ import Modal from 'react-modal';
 // import FormHelperText from '@material-ui/core/FormHelperText';
 // import PropTypes from 'prop-types';
 import { Link, useParams } from 'react-router-dom';
-import { backendApiContext } from '../../context';
+import { backendApiContext } from '../context';
+import CustomModal from './Modal';
 
 const customStyles = {
 	content: {
@@ -72,6 +73,10 @@ const Header = ({ showBookShowButton }) => {
 		loggedIn: sessionStorage.getItem('access-token') == null ? false : true,
 	});
 
+	const toggleModal = () => {
+		setState((ref) => ({ ...ref, modalIsOpen: !ref.modalIsOpen }));
+	};
+
 	const openModalHandler = () => {
 		setState({
 			modalIsOpen: true,
@@ -113,42 +118,65 @@ const Header = ({ showBookShowButton }) => {
 			? setState({ loginPasswordRequired: 'dispBlock' })
 			: setState({ loginPasswordRequired: 'dispNone' });
 
-		let dataLogin = null;
-		let xhrLogin = new XMLHttpRequest();
-		let that = this;
-		xhrLogin.addEventListener('readystatechange', function() {
-			if (this.readyState === 4) {
+		fetch(`${baseUrl}auth/login`, {
+			method: 'POST',
+			headers: {
+				Authorization: `Basic ${window.btoa(
+					state.username + ':' + state.loginPassword,
+				)}`,
+				'Content-Type': 'application/json',
+				'Cache-Control': 'no-cache',
+			},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				sessionStorage.setItem('uuid', JSON.parse(data.id));
 				sessionStorage.setItem(
-					'uuid',
-					JSON.parse(this.responseText).id,
+					'access-token',
+					JSON.parse(data['access-token']),
 				);
-				//sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
-
-				if (xhrLogin.getResponseHeader('access-token') == null) {
-					sessionStorage.setItem(
-						'access-token',
-						JSON.parse(this.responseText)['access-token'],
-					);
-				}
-
-				setState((el) => ({
-					...el,
-					loggedIn: true,
-				}));
-
+				setState((ref) => ({ ...ref, loggedIn: true }));
+				console.log(data);
 				closeModalHandler();
-			}
-		});
+			})
+			.catch((err) => console.log('Error: ', err));
 
-		xhrLogin.open('POST', baseUrl + 'auth/login');
-		xhrLogin.setRequestHeader(
-			'Authorization',
-			'Basic ' + window.btoa(state.username + ':' + state.loginPassword),
-		);
-		xhrLogin.setRequestHeader('Content-Type', 'application/json');
-		xhrLogin.setRequestHeader('Cache-Control', 'no-cache');
+		// let dataLogin = null;
+		// let xhrLogin = new XMLHttpRequest();
+		// let that = this;
+		// xhrLogin.addEventListener('readystatechange', function() {
+		// 	if (this.readyState === 4) {
+		// 		sessionStorage.setItem(
+		// 			'uuid',
+		// 			JSON.parse(this.responseText).id,
+		// 		);
+		// 		//sessionStorage.setItem("access-token", xhrLogin.getResponseHeader("access-token"));
 
-		xhrLogin.send(dataLogin);
+		// 		if (xhrLogin.getResponseHeader('access-token') == null) {
+		// 			sessionStorage.setItem(
+		// 				'access-token',
+		// 				JSON.parse(this.responseText)['access-token'],
+		// 			);
+		// 		}
+
+		// 		setState((el) => ({
+		// 			...el,
+		// 			loggedIn: true,
+		// 		}));
+
+		// 		closeModalHandler();
+		// 	}
+		// });
+
+		// xhrLogin.open('POST', baseUrl + 'auth/login');
+		// xhrLogin.setRequestHeader(
+		// 	'Authorization',
+		// 	'Basic ' + window.btoa(state.username + ':' + state.loginPassword),
+		// );
+		// xhrLogin.setRequestHeader('Content-Type', 'application/json');
+		// xhrLogin.setRequestHeader('Cache-Control', 'no-cache');
+
+		// xhrLogin.send(dataLogin);
 	};
 
 	const inputUsernameChangeHandler = (e) => {
@@ -309,17 +337,17 @@ const Header = ({ showBookShowButton }) => {
 					''
 				)}
 			</header>
-			<Modal
-				ariaHideApp={false}
+			<CustomModal
 				isOpen={state.modalIsOpen}
-				contentLabel="Login"
-				onRequestClose={closeModalHandler}
-				style={customStyles}
+				handleClose={() =>
+					setState((ref) => ({ ...ref, modalIsOpen: false }))
+				}
 			>
 				<Tabs
 					className="tabs"
 					value={state.value}
 					onChange={tabChangeHandler}
+					centered
 				>
 					<Tab label="Login" />
 					<Tab label="Register" />
@@ -478,7 +506,7 @@ const Header = ({ showBookShowButton }) => {
 						</Button>
 					</TabContainer>
 				)}
-			</Modal>
+			</CustomModal>
 		</div>
 	);
 };
