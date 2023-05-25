@@ -9,6 +9,8 @@ import {
 	InputLabel,
 	Input,
 	FormHelperText,
+	Box,
+	TextField,
 } from '@mui/material';
 // import Button from '@material-ui/core/Button';
 import logo from '../assets/logo.svg';
@@ -36,13 +38,25 @@ const customStyles = {
 	},
 };
 
-export const TabContainer = ({ children }) => {
+function TabPanel(props) {
+	const { children, value, index, ...other } = props;
+
 	return (
-		<Typography component="div" style={{ padding: 0, textAlign: 'center' }}>
-			{children}
-		</Typography>
+		<div
+			role="tabpanel"
+			hidden={value !== index}
+			id={`simple-tabpanel-${index}`}
+			aria-labelledby={`simple-tab-${index}`}
+			{...other}
+		>
+			{value === index && (
+				<Box sx={{ textAlign: 'center', width: '100%' }}>
+					{children}
+				</Box>
+			)}
+		</div>
 	);
-};
+}
 
 // TabContainer.propTypes = {
 // 	children: PropTypes.node.isRequired,
@@ -52,6 +66,13 @@ const Header = ({ showBookShowButton }) => {
 	const { baseUrl } = useContext(backendApiContext);
 
 	const { id } = useParams();
+	const [signUp, setSignUp] = useState({
+		firstName: '',
+		lastName: '',
+		email: '',
+		password: '',
+		contactNumber: '',
+	});
 	const [state, setState] = useState({
 		modalIsOpen: false,
 		value: 0,
@@ -106,8 +127,7 @@ const Header = ({ showBookShowButton }) => {
 	};
 
 	const tabChangeHandler = (event, value) => {
-		console.log('value = ', value);
-		setState({ value });
+		setState((ref) => ({ ...ref, value }));
 	};
 
 	const loginClickHandler = () => {
@@ -191,6 +211,11 @@ const Header = ({ showBookShowButton }) => {
 			...el,
 			loginPassword: e.target.value,
 		}));
+	};
+
+	const handleChange = (event) => {
+		const { name, value } = event.target;
+		setSignUp((ref) => ({ ...ref, [name]: value }));
 	};
 
 	const registerClickHandler = () => {
@@ -353,159 +378,137 @@ const Header = ({ showBookShowButton }) => {
 					<Tab label="Register" />
 				</Tabs>
 
-				{state.value === 0 && (
-					<TabContainer>
-						<FormControl required>
-							<InputLabel htmlFor="username">Username</InputLabel>
-							<Input
-								id="username"
-								type="text"
-								username={state.username}
-								onChange={inputUsernameChangeHandler}
-							/>
-							<FormHelperText className={state.usernameRequired}>
-								<span className="red">required</span>
-							</FormHelperText>
+				<TabPanel value={state.value} index={0}>
+					<FormControl required>
+						<InputLabel htmlFor="username">Username</InputLabel>
+						<Input
+							id="username"
+							type="text"
+							username={state.username}
+							onChange={inputUsernameChangeHandler}
+						/>
+						<FormHelperText className={state.usernameRequired}>
+							<span className="red">required</span>
+						</FormHelperText>
+					</FormControl>
+					<br />
+					<br />
+					<FormControl required>
+						<InputLabel htmlFor="loginPassword">
+							Password
+						</InputLabel>
+						<Input
+							id="loginPassword"
+							type="password"
+							loginpassword={state.loginPassword}
+							onChange={inputLoginPasswordChangeHandler}
+						/>
+						<FormHelperText className={state.loginPasswordRequired}>
+							<span className="red">required</span>
+						</FormHelperText>
+					</FormControl>
+					<br />
+					<br />
+					{state.loggedIn === true && (
+						<FormControl>
+							<span className="successText">
+								Login Successful!
+							</span>
 						</FormControl>
-						<br />
-						<br />
-						<FormControl required>
-							<InputLabel htmlFor="loginPassword">
-								Password
-							</InputLabel>
-							<Input
-								id="loginPassword"
-								type="password"
-								loginpassword={state.loginPassword}
-								onChange={inputLoginPasswordChangeHandler}
-							/>
-							<FormHelperText
-								className={state.loginPasswordRequired}
-							>
-								<span className="red">required</span>
-							</FormHelperText>
-						</FormControl>
-						<br />
-						<br />
-						{state.loggedIn === true && (
-							<FormControl>
-								<span className="successText">
-									Login Successful!
-								</span>
-							</FormControl>
-						)}
-						<br />
-						<br />
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={loginClickHandler}
-						>
-							LOGIN
-						</Button>
-					</TabContainer>
-				)}
+					)}
+					<br />
+					<br />
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={loginClickHandler}
+					>
+						LOGIN
+					</Button>
+				</TabPanel>
 
-				{state.value === 1 && (
-					<TabContainer>
-						<FormControl required>
-							<InputLabel htmlFor="firstname">
-								First Name
-							</InputLabel>
-							<Input
-								id="firstname"
-								type="text"
-								firstname={state.firstname}
-								onChange={inputFirstNameChangeHandler}
-							/>
-							<FormHelperText className={state.firstnameRequired}>
-								<span className="red">required</span>
-							</FormHelperText>
-						</FormControl>
-						<br />
-						<br />
-						<FormControl required>
-							<InputLabel htmlFor="lastname">
-								Last Name
-							</InputLabel>
-							<Input
-								id="lastname"
-								type="text"
-								lastname={state.lastname}
-								onChange={inputLastNameChangeHandler}
-							/>
-							<FormHelperText className={state.lastnameRequired}>
-								<span className="red">required</span>
-							</FormHelperText>
-						</FormControl>
-						<br />
-						<br />
-						<FormControl required>
-							<InputLabel htmlFor="email">Email</InputLabel>
-							<Input
-								id="email"
-								type="text"
-								email={state.email}
-								onChange={inputEmailChangeHandler}
-							/>
-							<FormHelperText className={state.emailRequired}>
-								<span className="red">required</span>
-							</FormHelperText>
-						</FormControl>
-						<br />
-						<br />
-						<FormControl required>
-							<InputLabel htmlFor="registerPassword">
-								Password
-							</InputLabel>
-							<Input
-								id="registerPassword"
-								type="password"
-								registerpassword={state.registerPassword}
-								onChange={inputRegisterPasswordChangeHandler}
-							/>
-							<FormHelperText
-								className={state.registerPasswordRequired}
-							>
-								<span className="red">required</span>
-							</FormHelperText>
-						</FormControl>
-						<br />
-						<br />
-						<FormControl required>
-							<InputLabel htmlFor="contact">
-								Contact No.
-							</InputLabel>
-							<Input
-								id="contact"
-								type="text"
-								contact={state.contact}
-								onChange={inputContactChangeHandler}
-							/>
-							<FormHelperText className={state.contactRequired}>
-								<span className="red">required</span>
-							</FormHelperText>
-						</FormControl>
-						<br />
-						<br />
-						{state.registrationSuccess === true && (
-							<FormControl>
-								<span className="successText">
-									Registration Successful. Please Login!
-								</span>
-							</FormControl>
-						)}
-						<br />
-						<br />
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={registerClickHandler}
-						>
-							REGISTER
-						</Button>
-					</TabContainer>
-				)}
+				<TabPanel value={state.value} index={1}>
+					<Box
+						sx={{
+							display: 'flex',
+							justifyContent: 'space-evenly',
+							marginBottom: '15px',
+						}}
+					>
+						<TextField
+							required
+							label="First Name"
+							id="firstName"
+							type="text"
+							sx={{ width: '100%', marginRight: '5px' }}
+							firstName={signUp.firstName}
+							onChange={handleChange}
+						/>
+						<TextField
+							required
+							label="Last Name"
+							id="lastName"
+							name={'lastName'}
+							type="text"
+							sx={{ width: '100%', marginLeft: '5px' }}
+							lastName={signUp.lastName}
+							onChange={handleChange}
+						/>
+					</Box>
+
+					<Box
+						sx={{
+							marginBottom: '15px',
+						}}
+					>
+						<TextField
+							required
+							label="Email"
+							id="email"
+							name={'email'}
+							type="text"
+							sx={{ width: '100%' }}
+							email={signUp.email}
+							onChange={handleChange}
+						/>
+					</Box>
+					<Box
+						sx={{
+							marginBottom: '15px',
+						}}
+					>
+						<TextField
+							required
+							id="password"
+							label="password"
+							type="password"
+							name={'password'}
+							sx={{ width: '100%' }}
+							autoComplete="current-password"
+							password={signUp.password}
+							onChange={handleChange}
+						/>
+					</Box>
+					<Box
+						sx={{
+							marginBottom: '15px',
+						}}
+					>
+						<TextField
+							required
+							label="Contact No."
+							id="contact"
+							type="text"
+							sx={{ width: '100%' }}
+							name={'contactNumber'}
+							contact={signUp.contactNumber}
+							onChange={handleChange}
+						/>
+					</Box>
+					<Box>
+						<Button variant="contained">Sign Up</Button>
+					</Box>
+				</TabPanel>
 			</CustomModal>
 		</div>
 	);
