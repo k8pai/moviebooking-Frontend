@@ -1,0 +1,9 @@
+[33ma0cacbc[m[33m ([m[1;36mHEAD -> [m[1;32mk8pai[m[33m, [m[1;31morigin/k8pai[m[33m)[m updated with modified mui components and modals
+[33m9059267[m remodified folder structure.
+[33m6f7ab8f[m migration update of material ui
+[33m06f4456[m updated with modified version and working model
+[33m48f5822[m deleted unused files for the moment
+[33m085a874[m updated react, react-router-dom, react-dom
+[33m0703e9b[m updated react-routes in controller.js updated createRoot function instead of render in index.js updated HomePage with major react changes
+[33m77c8ffd[m updated context file with baseurl
+[33m19e4518[m movie booking app initial commit
